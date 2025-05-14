@@ -1,4 +1,4 @@
-package com.magnum.noteapp.presentation.components
+package com.magnum.noteapp.presentation.view.components
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement

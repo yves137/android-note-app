@@ -1,4 +1,4 @@
-package com.magnum.noteapp.presentation.screens
+package com.magnum.noteapp.presentation.screens.list_all_notes
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,14 +26,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.magnum.noteapp.R
-import com.magnum.noteapp.presentation.components.RoundedCornerCard
-import com.magnum.noteapp.presentation.viewModel.GetNotesViewModel
+import com.magnum.noteapp.presentation.view.components.RoundedCornerCard
+import com.magnum.noteapp.presentation.screens.list_all_notes.GetNotesViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.koin.compose.viewmodel.koinViewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.tooling.preview.Preview
 import com.magnum.noteapp.domain.model.Note
-import com.magnum.noteapp.presentation.viewModel.DeleteNoteViewModel
+import com.magnum.noteapp.presentation.screens.list_all_notes.DeleteNoteViewModel
 
 @Composable
 fun LandingRootScreen(navController: NavController) {

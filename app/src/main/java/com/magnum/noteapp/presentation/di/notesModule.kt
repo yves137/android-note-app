@@ -1,10 +1,10 @@
 package com.magnum.noteapp.presentation.di
 
-import com.magnum.noteapp.presentation.viewModel.CreateNoteViewModel
-import com.magnum.noteapp.presentation.viewModel.DeleteNoteViewModel
-import com.magnum.noteapp.presentation.viewModel.GetNoteByIdViewModel
-import com.magnum.noteapp.presentation.viewModel.GetNotesViewModel
-import com.magnum.noteapp.presentation.viewModel.UpdateNoteViewModel
+import com.magnum.noteapp.presentation.screens.create_note.CreateNoteViewModel
+import com.magnum.noteapp.presentation.screens.list_all_notes.DeleteNoteViewModel
+import com.magnum.noteapp.presentation.screens.shared_viewModel.GetNoteByIdViewModel
+import com.magnum.noteapp.presentation.screens.list_all_notes.GetNotesViewModel
+import com.magnum.noteapp.presentation.screens.update_note.UpdateNoteViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 

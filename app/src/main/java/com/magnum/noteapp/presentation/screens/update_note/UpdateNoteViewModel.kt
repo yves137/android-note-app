@@ -1,4 +1,4 @@
-package com.magnum.noteapp.presentation.viewModel
+package com.magnum.noteapp.presentation.screens.update_note
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

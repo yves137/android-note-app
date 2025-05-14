@@ -1,4 +1,4 @@
-package com.magnum.noteapp.presentation.screens
+package com.magnum.noteapp.presentation.screens.update_note
 
 import android.widget.Toast
 import androidx.compose.foundation.border
@@ -23,54 +23,69 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.magnum.noteapp.R
-import com.magnum.noteapp.presentation.viewModel.CreateNoteViewModel
-import org.koin.compose.viewmodel.koinViewModel
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.tooling.preview.Preview
 import com.magnum.noteapp.domain.model.Note
+import com.magnum.noteapp.presentation.screens.shared_viewModel.GetNoteByIdViewModel
+import org.koin.compose.viewmodel.koinViewModel
+
 
 @Composable
-fun CreateNoteScreenRoot(navController: NavController) {
-    val noteViewModel: CreateNoteViewModel = koinViewModel()
-    val noteState by noteViewModel.note.collectAsStateWithLifecycle()
-    val localContext = LocalContext.current
-    CreateNoteScreen(
-        noteState = noteState,
-        handleCreateNote = {
-            noteViewModel.createNote()
-            Toast.makeText(localContext, "Note Created", Toast.LENGTH_SHORT).show()
+fun EditNotePageScreen(
+    navController: NavController,
+    noteId: String
+) {
+    val getNoteByIdViewModel: GetNoteByIdViewModel = koinViewModel()
+    val updateNoteViewModel: UpdateNoteViewModel = koinViewModel()
+
+    getNoteByIdViewModel.loadNoteById(noteId)
+    val foundNoteState by getNoteByIdViewModel.note.collectAsStateWithLifecycle()
+    val state by updateNoteViewModel.note.collectAsStateWithLifecycle()
+
+    LaunchedEffect(key1 = foundNoteState) {
+        foundNoteState?.let {
+            updateNoteViewModel.modifyNote(it)
+        }
+    }
+
+    EditNotePage(
+        handleNavigateBack = { navController.popBackStack() },
+        state = state,
+        handleSaveNote = {
+            updateNoteViewModel.updateNote()
             navController.popBackStack()
         },
-        handleNavigateBack = {
-            navController.popBackStack()
+        handleEditTitle = { noteTitle ->
+            updateNoteViewModel.modifyNoteTitle(noteTitle)
         },
-        handleModifyTitle = { title ->
-            noteViewModel.modifyNoteTitle(title)
-        },
-        handleModifyContent = { content ->
-            noteViewModel.modifyNoteContent(content)
+        handleEditContent = { noteContent ->
+            updateNoteViewModel.modifyNoteContent(noteContent)
         }
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CreateNoteScreen(
-    noteState: CreateNoteViewModel.CreateNoteUIState,
-    handleCreateNote: () -> Unit,
+fun EditNotePage(
     handleNavigateBack: () -> Unit,
-    handleModifyTitle: (title: String) -> Unit,
-    handleModifyContent: (content: String) -> Unit
+    state: UpdateNoteViewModel.UpdateNoteUIState,
+    handleSaveNote: () -> Unit = {},
+    handleEditTitle: (title: String) -> Unit = {},
+    handleEditContent: (content: String) -> Unit = {},
 ) {
+
+    val localContext = LocalContext.current
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -87,16 +102,16 @@ fun CreateNoteScreen(
                         }
 
                         Text(
-                            "CREATE NOTE", fontWeight = FontWeight.Bold
+                            "EDIT NOTE", fontWeight = FontWeight.Bold
                         )
 
                         IconButton(onClick = {
-                            handleCreateNote()
-                        }, enabled = noteState.isSavable) {
+                            handleSaveNote()
+                            Toast.makeText(localContext, "Note Edited", Toast.LENGTH_SHORT).show()
+                        }, enabled = state.isSavable) {
                             Icon(Icons.Filled.Done, contentDescription = "Save")
                         }
                     }
-
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = colorResource(id = R.color.teal_700),
@@ -117,9 +132,9 @@ fun CreateNoteScreen(
                 ) {
 
                     TextField(
-                        value = noteState.note.title,
+                        value = state.note?.title ?: "NO nOte",
                         onValueChange = {
-                            handleModifyTitle(it)
+                            handleEditTitle(it)
                         },
                         label = { Text("Title") },
                         modifier = Modifier
@@ -130,9 +145,9 @@ fun CreateNoteScreen(
                     Spacer(modifier = Modifier.height(10.dp))
 
                     TextField(
-                        value = noteState.note.content,
+                        value = state.note?.content ?: "No Content",
                         onValueChange = {
-                            handleModifyContent(it)
+                            handleEditContent(it)
                         },
                         label = { Text("Content") },
                         modifier = Modifier
@@ -142,7 +157,6 @@ fun CreateNoteScreen(
                     )
                     Spacer(modifier = Modifier.height(20.dp))
                 }
-
             }
         }
     )
@@ -151,20 +165,19 @@ fun CreateNoteScreen(
 
 @Composable
 @Preview
-fun PreviewCreateNote() {
+fun PreviewEditNote() {
 
-    val state = CreateNoteViewModel.CreateNoteUIState(
-        note = Note(
-            title = "custom title",
-            content = " custom Content"
-        ),
-    )
+    val state =
+        UpdateNoteViewModel.UpdateNoteUIState(
+            note = Note(title = "Thomas", content = "Content"),
+            isSavable = true
+        )
 
-    CreateNoteScreen(
-        noteState = state,
-        handleCreateNote = { },
-        handleNavigateBack = { },
-        handleModifyTitle = { },
-        handleModifyContent = { }
-    )
+
+    EditNotePage(
+        handleNavigateBack = {},
+        state = state,
+        handleSaveNote = {},
+        handleEditTitle = {},
+        handleEditContent = {})
 }

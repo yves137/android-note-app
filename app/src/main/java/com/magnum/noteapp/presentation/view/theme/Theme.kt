@@ -1,4 +1,4 @@
-package com.magnum.noteapp.presentation.theme
+package com.magnum.noteapp.presentation.view.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme

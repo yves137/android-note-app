@@ -1,4 +1,4 @@
-package com.magnum.noteapp.presentation.viewModel
+package com.magnum.noteapp.presentation.screens.list_all_notes
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -16,6 +16,6 @@ class GetNotesViewModel(getNotesUseCase: GetNotesUseCase) : ViewModel() {
 
     val notes = getNotesUseCase.invoke().map {
         GetNotesUIState(it)
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, GetNotesUIState())
+    }.stateIn(viewModelScope, SharingStarted.Companion.Eagerly, GetNotesUIState())
 
 }

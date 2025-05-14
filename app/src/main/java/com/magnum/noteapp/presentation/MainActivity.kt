@@ -10,11 +10,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.magnum.noteapp.presentation.screens.CreateNoteScreenRoot
-import com.magnum.noteapp.presentation.screens.EditNotePageScreen
-import com.magnum.noteapp.presentation.screens.LandingRootScreen
-import com.magnum.noteapp.presentation.screens.ViewNoteRootScreen
-import com.magnum.noteapp.presentation.theme.NoteAppTheme
+import com.magnum.noteapp.presentation.screens.create_note.CreateNoteScreenRoot
+import com.magnum.noteapp.presentation.screens.update_note.EditNotePageScreen
+import com.magnum.noteapp.presentation.screens.list_all_notes.LandingRootScreen
+import com.magnum.noteapp.presentation.screens.preview_note.ViewNoteRootScreen
+import com.magnum.noteapp.presentation.view.theme.NoteAppTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -1,4 +1,4 @@
-package com.magnum.noteapp.presentation.screens
+package com.magnum.noteapp.presentation.screens.preview_note
 
 
 import androidx.compose.foundation.layout.Column
@@ -33,7 +33,7 @@ import com.magnum.noteapp.R
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.tooling.preview.Preview
 import com.magnum.noteapp.domain.model.Note
-import com.magnum.noteapp.presentation.viewModel.GetNoteByIdViewModel
+import com.magnum.noteapp.presentation.screens.shared_viewModel.GetNoteByIdViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable

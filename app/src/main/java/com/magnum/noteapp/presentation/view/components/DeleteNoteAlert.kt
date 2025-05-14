@@ -1,4 +1,4 @@
-package com.magnum.noteapp.presentation.components
+package com.magnum.noteapp.presentation.view.components
 
 import android.widget.Toast
 import androidx.compose.material3.AlertDialog
