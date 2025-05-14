@@ -10,10 +10,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.magnum.noteapp.presentation.pages.CreateNotePage
-import com.magnum.noteapp.presentation.pages.EditNotePageRoot
-import com.magnum.noteapp.presentation.pages.LandingPage
-import com.magnum.noteapp.presentation.pages.ViewNotePage
+import com.magnum.noteapp.presentation.screens.CreateNoteScreenRoot
+import com.magnum.noteapp.presentation.screens.EditNotePageScreen
+import com.magnum.noteapp.presentation.screens.LandingRootScreen
+import com.magnum.noteapp.presentation.screens.ViewNoteRootScreen
 import com.magnum.noteapp.presentation.theme.NoteAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -34,32 +34,32 @@ fun NoteAppNavigation() {
 
     NavHost(navController = navigationController, startDestination = "landing") {
         composable("landing") {
-            LandingPage(navigationController)
+            LandingRootScreen(navigationController)
         }
 
         composable("createNote") {
-            CreateNotePage(navigationController)
+            CreateNoteScreenRoot(navigationController)
         }
 
         composable(
             route = "editNote/{noteId}", arguments = listOf(
-            navArgument("noteId") { type = NavType.StringType }
-        )) { navBackStackEntry ->
+                navArgument("noteId") { type = NavType.StringType }
+            )) { navBackStackEntry ->
 
             val noteId = navBackStackEntry.arguments?.getString("noteId")
             noteId?.let {
-                EditNotePageRoot(navigationController, noteId)
+                EditNotePageScreen(navigationController, noteId)
 
             }
         }
 
         composable(
             route = "viewNote/{noteId}", arguments = listOf(
-            navArgument("noteId") { type = NavType.StringType }
-        )) { navBackStackEntry ->
+                navArgument("noteId") { type = NavType.StringType }
+            )) { navBackStackEntry ->
             val noteId = navBackStackEntry.arguments?.getString("noteId")
             noteId?.let {
-                ViewNotePage(navigationController, noteId)
+                ViewNoteRootScreen(navigationController, noteId)
 
             }
         }

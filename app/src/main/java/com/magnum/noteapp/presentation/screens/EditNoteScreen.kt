@@ -1,4 +1,4 @@
-package com.magnum.noteapp.presentation.pages
+package com.magnum.noteapp.presentation.screens
 
 import android.widget.Toast
 import androidx.compose.foundation.border
@@ -23,33 +23,70 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.magnum.noteapp.R
-import com.magnum.noteapp.data.database.entity.NoteEntity
-import com.magnum.noteapp.presentation.viewModel.NoteViewModel
-import kotlinx.coroutines.launch
+import com.magnum.noteapp.domain.model.Note
+import com.magnum.noteapp.presentation.viewModel.GetNoteByIdViewModel
+import com.magnum.noteapp.presentation.viewModel.UpdateNoteViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
 
+@Composable
+fun EditNotePageScreen(
+    navController: NavController,
+    noteId: String
+) {
+    val getNoteByIdViewModel: GetNoteByIdViewModel = koinViewModel()
+    val updateNoteViewModel: UpdateNoteViewModel = koinViewModel()
+
+    getNoteByIdViewModel.loadNoteById(noteId)
+    val foundNoteState by getNoteByIdViewModel.note.collectAsStateWithLifecycle()
+    val state by updateNoteViewModel.note.collectAsStateWithLifecycle()
+
+    LaunchedEffect(key1 = foundNoteState) {
+        foundNoteState?.let {
+            updateNoteViewModel.modifyNote(it)
+        }
+    }
+
+    EditNotePage(
+        handleNavigateBack = { navController.popBackStack() },
+        state = state,
+        handleSaveNote = {
+            updateNoteViewModel.updateNote()
+            navController.popBackStack()
+        },
+        handleEditTitle = { noteTitle ->
+            updateNoteViewModel.modifyNoteTitle(noteTitle)
+        },
+        handleEditContent = { noteContent ->
+            updateNoteViewModel.modifyNoteContent(noteContent)
+        }
+    )
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CreateNotePage(navController: NavController) {
-    val noteViewModel: NoteViewModel = koinViewModel()
-    val noteTitle = remember { mutableStateOf("") }
-    val noteContent = remember { mutableStateOf("") }
-    val isSaveEnabled = remember { derivedStateOf { noteTitle.value.trim().isNotEmpty() } }
-    val coroutineScope = rememberCoroutineScope()
+fun EditNotePage(
+    handleNavigateBack: () -> Unit,
+    state: UpdateNoteViewModel.UpdateNoteUIState,
+    handleSaveNote: () -> Unit = {},
+    handleEditTitle: (title: String) -> Unit = {},
+    handleEditContent: (content: String) -> Unit = {},
+) {
+
     val localContext = LocalContext.current
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -60,28 +97,22 @@ fun CreateNotePage(navController: NavController) {
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         IconButton(onClick = {
-                            navController.popBackStack()
+                            handleNavigateBack()
                         }) {
                             Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                         }
 
                         Text(
-                            "CREATE NOTE", fontWeight = FontWeight.Bold
+                            "EDIT NOTE", fontWeight = FontWeight.Bold
                         )
 
                         IconButton(onClick = {
-                            coroutineScope.launch {
-                                val noteEntity =
-                                    NoteEntity(title = noteTitle.value, content = noteContent.value)
-                                noteViewModel.insertNote(noteEntity)
-                                Toast.makeText(localContext, "Note Created", Toast.LENGTH_SHORT).show()
-                                navController.popBackStack()
-                            }
-                        }, enabled = isSaveEnabled.value) {
+                            handleSaveNote()
+                            Toast.makeText(localContext, "Note Edited", Toast.LENGTH_SHORT).show()
+                        }, enabled = state.isSavable) {
                             Icon(Icons.Filled.Done, contentDescription = "Save")
                         }
                     }
-
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = colorResource(id = R.color.teal_700),
@@ -102,9 +133,9 @@ fun CreateNotePage(navController: NavController) {
                 ) {
 
                     TextField(
-                        value = noteTitle.value,
+                        value = state.note?.title ?: "NO nOte",
                         onValueChange = {
-                            noteTitle.value = it
+                            handleEditTitle(it)
                         },
                         label = { Text("Title") },
                         modifier = Modifier
@@ -115,9 +146,9 @@ fun CreateNotePage(navController: NavController) {
                     Spacer(modifier = Modifier.height(10.dp))
 
                     TextField(
-                        value = noteContent.value,
+                        value = state.note?.content ?: "No Content",
                         onValueChange = {
-                            noteContent.value = it
+                            handleEditContent(it)
                         },
                         label = { Text("Content") },
                         modifier = Modifier
@@ -127,9 +158,27 @@ fun CreateNotePage(navController: NavController) {
                     )
                     Spacer(modifier = Modifier.height(20.dp))
                 }
-
             }
         }
     )
 
+}
+
+@Composable
+@Preview
+fun PreviewEditNote() {
+
+    val state =
+        UpdateNoteViewModel.UpdateNoteUIState(
+            note = Note(title = "Thomas", content = "Content"),
+            isSavable = true
+        )
+
+
+    EditNotePage(
+        handleNavigateBack = {},
+        state = state,
+        handleSaveNote = {},
+        handleEditTitle = {},
+        handleEditContent = {})
 }

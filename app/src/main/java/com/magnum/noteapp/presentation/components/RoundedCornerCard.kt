@@ -27,13 +27,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.magnum.noteapp.data.database.entity.NoteEntity
 import com.magnum.noteapp.R
+import com.magnum.noteapp.domain.model.Note
 
 
 @Composable
 fun RoundedCornerCard(
-    note: NoteEntity,
+    note: Note,
     onDelete: () -> Unit,
     handleViewNote: () -> Unit,
     handleEditNote: () -> Unit

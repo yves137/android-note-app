@@ -4,6 +4,6 @@ import com.magnum.noteapp.domain.repository.NoteRepository
 
 class GetNotesUseCase(private val noteRepository: NoteRepository) {
 
-    suspend operator fun invoke() = noteRepository.getAllNotes()
+    operator fun invoke() = noteRepository.getAllNotes()
 
 }

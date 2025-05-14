@@ -23,9 +23,7 @@ class NoteRepositoryImpl(val applicationDb: ApplicationDb) : NoteRepository {
     }
 
     override fun getAllNotes(): Flow<List<Note>> {
-        return notesDao.getAllNotes().map { list ->
-            list.map { it.toNote() }
-        }
+        return notesDao.getAllNotes().map { it.map { it.toNote() } }
     }
 
     override suspend fun getNoteById(id: String): Note? {

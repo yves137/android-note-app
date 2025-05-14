@@ -1,4 +1,4 @@
-package com.magnum.noteapp.presentation.pages
+package com.magnum.noteapp.presentation.screens
 
 
 import androidx.compose.foundation.layout.Column
@@ -30,17 +30,32 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.magnum.noteapp.R
-import com.magnum.noteapp.presentation.viewModel.NoteViewModel
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.tooling.preview.Preview
+import com.magnum.noteapp.domain.model.Note
+import com.magnum.noteapp.presentation.viewModel.GetNoteByIdViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
+@Composable
+fun ViewNoteRootScreen(navController: NavController, noteId: String) {
+    val viewModel: GetNoteByIdViewModel = koinViewModel()
+    viewModel.loadNoteById(noteId)
+    val state by viewModel.note.collectAsStateWithLifecycle()
+
+    ViewNoteScreen(
+        noteState = state,
+        handleNavigateBack = {
+            navController.popBackStack()
+        }
+    )
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ViewNotePage(navController: NavController, noteId: String) {
-    val viewModel: NoteViewModel = koinViewModel()
-    viewModel.getNoteById(noteId)
-    val state by viewModel.detailNoteUIState.collectAsStateWithLifecycle()
+fun ViewNoteScreen(
+    noteState: Note?,
+    handleNavigateBack: () -> Unit = {},
+) {
 
     Scaffold(
         topBar = {
@@ -51,7 +66,7 @@ fun ViewNotePage(navController: NavController, noteId: String) {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         IconButton(onClick = {
-                            navController.popBackStack()
+                            handleNavigateBack()
                         }) {
                             Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                         }
@@ -84,7 +99,7 @@ fun ViewNotePage(navController: NavController, noteId: String) {
                 ) {
 
                     Text(
-                        text = state.note?.title ?: "No title",
+                        text = noteState?.title ?: "No title",
                         fontWeight = FontWeight.Bold,
                         fontSize = 22.sp,
                         color = colorResource(id = R.color.teal_700)
@@ -93,7 +108,7 @@ fun ViewNotePage(navController: NavController, noteId: String) {
                     Spacer(modifier = Modifier.height(10.dp))
 
                     Text(
-                        text = state.note?.content ?: "",
+                        text = noteState?.content ?: "",
                         fontSize = 18.sp,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -105,5 +120,16 @@ fun ViewNotePage(navController: NavController, noteId: String) {
             }
         }
     )
+}
 
+@Composable
+@Preview
+fun ViewNotePreview() {
+    ViewNoteScreen(
+        noteState = Note(
+            title = "Sample Note",
+            content = "This is a sample note content."
+        ),
+        handleNavigateBack = {}
+    )
 }

@@ -3,6 +3,7 @@ package com.magnum.noteapp
 import android.app.Application
 import com.magnum.noteapp.data.di.databaseModule
 import com.magnum.noteapp.data.di.noteRepositoryImplModule
+import com.magnum.noteapp.domain.di.noteUseCaseModule
 import com.magnum.noteapp.presentation.di.notesModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -15,7 +16,7 @@ class MainApplication : Application() {
         startKoin {
             androidContext(this@MainApplication)
             androidLogger()
-            modules(databaseModule, notesModule, noteRepositoryImplModule)
+            modules(databaseModule, notesModule, noteRepositoryImplModule, noteUseCaseModule)
         }
     }
 }
