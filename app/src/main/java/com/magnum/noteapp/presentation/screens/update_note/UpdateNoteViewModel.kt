@@ -3,16 +3,31 @@ package com.magnum.noteapp.presentation.screens.update_note
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.magnum.noteapp.domain.model.Note
+import com.magnum.noteapp.domain.use_case.GetNoteUseCase
 import com.magnum.noteapp.domain.use_case.UpdateNoteUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class UpdateNoteViewModel(private val updateNoteUseCase: UpdateNoteUseCase) : ViewModel() {
+class UpdateNoteViewModel(
+    private val updateNoteUseCase: UpdateNoteUseCase,
+    getNoteUseCase: GetNoteUseCase,
+    noteId: String
+) : ViewModel() {
     data class UpdateNoteUIState(val note: Note? = null, val isSavable: Boolean = false)
 
     private val _note = MutableStateFlow(UpdateNoteUIState())
     val note = _note
+
+    init {
+        viewModelScope.launch {
+            getNoteUseCase(noteId)?.let { foundNote ->
+                _note.update {
+                    it.copy(note = foundNote, isSavable = false)
+                }
+            }
+        }
+    }
 
     fun updateNote() {
         viewModelScope.launch {

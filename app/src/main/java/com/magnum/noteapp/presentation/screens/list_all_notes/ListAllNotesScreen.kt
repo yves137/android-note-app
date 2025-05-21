@@ -27,20 +27,17 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.magnum.noteapp.R
 import com.magnum.noteapp.presentation.view.components.RoundedCornerCard
-import com.magnum.noteapp.presentation.screens.list_all_notes.GetNotesViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.koin.compose.viewmodel.koinViewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.tooling.preview.Preview
 import com.magnum.noteapp.domain.model.Note
-import com.magnum.noteapp.presentation.screens.list_all_notes.DeleteNoteViewModel
 
 @Composable
-fun LandingRootScreen(navController: NavController) {
-    val noteViewModel: GetNotesViewModel = koinViewModel()
-    val deleteNoteViewModel: DeleteNoteViewModel = koinViewModel()
+fun ListAllNotesRootScreen(navController: NavController) {
+    val noteViewModel: ListAllNotesViewModel = koinViewModel()
     val allNotes by noteViewModel.notes.collectAsStateWithLifecycle()
-    LandingScreen(
+    ListAllNotesScreen(
         allNotes = allNotes,
         handleViewNote = { noteId ->
             navController.navigate("viewNote/$noteId")
@@ -49,7 +46,7 @@ fun LandingRootScreen(navController: NavController) {
             navController.navigate("editNote/$noteId")
         },
         handleDeleteNote = {
-            deleteNoteViewModel.deleteNote(it)
+            noteViewModel.deleteNote(it)
         },
         handleNavigateToCreateNote = {
             navController.navigate("createNote")
@@ -59,8 +56,8 @@ fun LandingRootScreen(navController: NavController) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LandingScreen(
-    allNotes: GetNotesViewModel.GetNotesUIState,
+fun ListAllNotesScreen(
+    allNotes: ListAllNotesViewModel.GetNotesUIState,
     handleViewNote: (String) -> Unit = {},
     handleEditNote: (String) -> Unit = {},
     handleDeleteNote: (Note) -> Unit = {},
@@ -141,8 +138,8 @@ fun LandingScreenPreview() {
             content = "This is the second note"
         )
     )
-    LandingScreen(
-        allNotes = GetNotesViewModel.GetNotesUIState(notes),
+    ListAllNotesScreen(
+        allNotes = ListAllNotesViewModel.GetNotesUIState(notes),
         handleViewNote = {},
         handleEditNote = {},
         handleDeleteNote = {},

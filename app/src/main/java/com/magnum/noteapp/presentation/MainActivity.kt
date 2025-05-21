@@ -11,9 +11,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.magnum.noteapp.presentation.screens.create_note.CreateNoteScreenRoot
-import com.magnum.noteapp.presentation.screens.update_note.EditNotePageScreen
-import com.magnum.noteapp.presentation.screens.list_all_notes.LandingRootScreen
-import com.magnum.noteapp.presentation.screens.preview_note.ViewNoteRootScreen
+import com.magnum.noteapp.presentation.screens.update_note.UpdateNotePageScreen
+import com.magnum.noteapp.presentation.screens.list_all_notes.ListAllNotesRootScreen
+import com.magnum.noteapp.presentation.screens.view_note.ViewNoteRootScreen
 import com.magnum.noteapp.presentation.view.theme.NoteAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -34,7 +34,7 @@ fun NoteAppNavigation() {
 
     NavHost(navController = navigationController, startDestination = "landing") {
         composable("landing") {
-            LandingRootScreen(navigationController)
+            ListAllNotesRootScreen(navigationController)
         }
 
         composable("createNote") {
@@ -48,7 +48,7 @@ fun NoteAppNavigation() {
 
             val noteId = navBackStackEntry.arguments?.getString("noteId")
             noteId?.let {
-                EditNotePageScreen(navigationController, noteId)
+                UpdateNotePageScreen(navigationController, noteId)
 
             }
         }

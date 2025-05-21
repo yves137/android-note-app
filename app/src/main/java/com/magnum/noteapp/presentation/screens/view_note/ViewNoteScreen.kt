@@ -1,4 +1,4 @@
-package com.magnum.noteapp.presentation.screens.preview_note
+package com.magnum.noteapp.presentation.screens.view_note
 
 
 import androidx.compose.foundation.layout.Column
@@ -33,13 +33,15 @@ import com.magnum.noteapp.R
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.tooling.preview.Preview
 import com.magnum.noteapp.domain.model.Note
-import com.magnum.noteapp.presentation.screens.shared_viewModel.GetNoteByIdViewModel
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun ViewNoteRootScreen(navController: NavController, noteId: String) {
-    val viewModel: GetNoteByIdViewModel = koinViewModel()
-    viewModel.loadNoteById(noteId)
+    val viewModel: ViewNoteViewModel = koinViewModel {
+        parametersOf(noteId)
+    }
+
     val state by viewModel.note.collectAsStateWithLifecycle()
 
     ViewNoteScreen(

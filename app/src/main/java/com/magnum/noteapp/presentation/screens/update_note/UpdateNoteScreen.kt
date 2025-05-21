@@ -23,7 +23,6 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,29 +35,20 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.magnum.noteapp.R
 import com.magnum.noteapp.domain.model.Note
-import com.magnum.noteapp.presentation.screens.shared_viewModel.GetNoteByIdViewModel
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 
 @Composable
-fun EditNotePageScreen(
+fun UpdateNotePageScreen(
     navController: NavController,
     noteId: String
 ) {
-    val getNoteByIdViewModel: GetNoteByIdViewModel = koinViewModel()
-    val updateNoteViewModel: UpdateNoteViewModel = koinViewModel()
-
-    getNoteByIdViewModel.loadNoteById(noteId)
-    val foundNoteState by getNoteByIdViewModel.note.collectAsStateWithLifecycle()
+    val updateNoteViewModel: UpdateNoteViewModel = koinViewModel { parametersOf(noteId) }
     val state by updateNoteViewModel.note.collectAsStateWithLifecycle()
 
-    LaunchedEffect(key1 = foundNoteState) {
-        foundNoteState?.let {
-            updateNoteViewModel.modifyNote(it)
-        }
-    }
 
-    EditNotePage(
+    UpdateNotePage(
         handleNavigateBack = { navController.popBackStack() },
         state = state,
         handleSaveNote = {
@@ -76,7 +66,7 @@ fun EditNotePageScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditNotePage(
+fun UpdateNotePage(
     handleNavigateBack: () -> Unit,
     state: UpdateNoteViewModel.UpdateNoteUIState,
     handleSaveNote: () -> Unit = {},
@@ -174,7 +164,7 @@ fun PreviewEditNote() {
         )
 
 
-    EditNotePage(
+    UpdateNotePage(
         handleNavigateBack = {},
         state = state,
         handleSaveNote = {},
