@@ -8,8 +8,8 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val notesModule = module {
-    viewModel { ListAllNotesViewModel(get(), get()) }
-    viewModel { (noteId: String) -> ViewNoteViewModel(get(), noteId) }
+    viewModel { ListAllNotesViewModel(get(), get(),get()) }
+    viewModel { (noteId: String) -> ViewNoteViewModel(get(),get(), noteId) }
     viewModel { CreateNoteViewModel(get()) }
     viewModel { (noteId: String) -> UpdateNoteViewModel(get(), get(), noteId) }
 }

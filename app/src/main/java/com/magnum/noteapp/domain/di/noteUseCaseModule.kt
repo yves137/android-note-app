@@ -4,6 +4,7 @@ import com.magnum.noteapp.domain.use_case.CreateNoteUseCase
 import com.magnum.noteapp.domain.use_case.DeleteNoteUseCase
 import com.magnum.noteapp.domain.use_case.GetNoteUseCase
 import com.magnum.noteapp.domain.use_case.GetNotesUseCase
+import com.magnum.noteapp.domain.use_case.NoteTimerUseCase
 import com.magnum.noteapp.domain.use_case.UpdateNoteUseCase
 import org.koin.dsl.module
 
@@ -14,4 +15,5 @@ val noteUseCaseModule = module {
     single { GetNoteUseCase(get()) }
     single { GetNotesUseCase(get()) }
     single { DeleteNoteUseCase(get()) }
+    single { NoteTimerUseCase() }
 }

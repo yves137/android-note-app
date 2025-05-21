@@ -1,6 +1,7 @@
 package com.magnum.noteapp.presentation.screens.view_note
 
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -43,8 +44,10 @@ fun ViewNoteRootScreen(navController: NavController, noteId: String) {
     }
 
     val state by viewModel.note.collectAsStateWithLifecycle()
+    val timer by viewModel.timer.collectAsStateWithLifecycle()
 
     ViewNoteScreen(
+        timer = timer,
         noteState = state,
         handleNavigateBack = {
             navController.popBackStack()
@@ -55,6 +58,7 @@ fun ViewNoteRootScreen(navController: NavController, noteId: String) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ViewNoteScreen(
+    timer: String,
     noteState: Note?,
     handleNavigateBack: () -> Unit = {},
 ) {
@@ -65,7 +69,8 @@ fun ViewNoteScreen(
                 title = {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         IconButton(onClick = {
                             handleNavigateBack()
@@ -73,10 +78,13 @@ fun ViewNoteScreen(
                             Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                         }
 
-                        Spacer(modifier = Modifier.width(60.dp))
-
                         Text(
                             "PREVIEW", fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            timer,
+                            fontSize = 16.sp,
+                            modifier = Modifier.padding(end = 10.dp)
                         )
 
                     }
@@ -128,6 +136,7 @@ fun ViewNoteScreen(
 @Preview
 fun ViewNotePreview() {
     ViewNoteScreen(
+        timer = "00:00:00",
         noteState = Note(
             title = "Sample Note",
             content = "This is a sample note content."

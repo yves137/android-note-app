@@ -2,11 +2,13 @@ package com.magnum.noteapp.presentation.screens.list_all_notes
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
@@ -31,13 +33,16 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.koin.compose.viewmodel.koinViewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.sp
 import com.magnum.noteapp.domain.model.Note
 
 @Composable
 fun ListAllNotesRootScreen(navController: NavController) {
     val noteViewModel: ListAllNotesViewModel = koinViewModel()
     val allNotes by noteViewModel.notes.collectAsStateWithLifecycle()
+    val timer by noteViewModel.timer.collectAsStateWithLifecycle()
     ListAllNotesScreen(
+        timer = timer,
         allNotes = allNotes,
         handleViewNote = { noteId ->
             navController.navigate("viewNote/$noteId")
@@ -57,6 +62,7 @@ fun ListAllNotesRootScreen(navController: NavController) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListAllNotesScreen(
+    timer: String,
     allNotes: ListAllNotesViewModel.GetNotesUIState,
     handleViewNote: (String) -> Unit = {},
     handleEditNote: (String) -> Unit = {},
@@ -72,7 +78,20 @@ fun ListAllNotesScreen(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
-                    ) { Text("NOTES", fontWeight = FontWeight.Bold) }
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Absolute.Right
+                        ) {
+                            Text("NOTES", fontWeight = FontWeight.Bold)
+                            Spacer(modifier = Modifier.width(90.dp))
+                            Text(
+                                timer,
+                                fontSize = 16.sp,
+                                modifier = Modifier.padding(end = 10.dp)
+                            )
+                        }
+                    }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = colorResource(id = R.color.teal_700),
@@ -139,6 +158,7 @@ fun LandingScreenPreview() {
         )
     )
     ListAllNotesScreen(
+        timer = "00:00:00",
         allNotes = ListAllNotesViewModel.GetNotesUIState(notes),
         handleViewNote = {},
         handleEditNote = {},
