@@ -63,10 +63,10 @@ fun ListAllNotesRootScreen(navController: NavController) {
 @Composable
 fun ListAllNotesScreen(
     timer: String,
-    allNotes: ListAllNotesViewModel.GetNotesUIState,
+    allNotes: ListAllNotesViewModel.ListAllNotesUIState,
     handleViewNote: (String) -> Unit = {},
     handleEditNote: (String) -> Unit = {},
-    handleDeleteNote: (Note) -> Unit = {},
+    handleDeleteNote: (String) -> Unit = {},
     handleNavigateToCreateNote: () -> Unit = {},
 ) {
 
@@ -129,7 +129,7 @@ fun ListAllNotesScreen(
                             Spacer(modifier = Modifier.height(2.dp))
                             RoundedCornerCard(
                                 item,
-                                onDelete = { handleDeleteNote(item) },
+                                onDelete = { handleDeleteNote(item.id) },
                                 handleViewNote = { handleViewNote(item.id) },
                                 handleEditNote = { handleEditNote(item.id) })
                             Spacer(modifier = Modifier.height(8.dp))
@@ -159,7 +159,7 @@ fun LandingScreenPreview() {
     )
     ListAllNotesScreen(
         timer = "00:00:00",
-        allNotes = ListAllNotesViewModel.GetNotesUIState(notes),
+        allNotes = ListAllNotesViewModel.ListAllNotesUIState(notes),
         handleViewNote = {},
         handleEditNote = {},
         handleDeleteNote = {},

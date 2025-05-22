@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.magnum.noteapp.domain.model.Note
 import com.magnum.noteapp.domain.use_case.DeleteNoteUseCase
+import com.magnum.noteapp.domain.use_case.GetNoteUseCase
 import com.magnum.noteapp.domain.use_case.GetNotesUseCase
 import com.magnum.noteapp.domain.use_case.NoteTimerUseCase
 import kotlinx.coroutines.flow.SharingStarted
@@ -14,22 +15,25 @@ import kotlinx.coroutines.launch
 class ListAllNotesViewModel(
     getNotesUseCase: GetNotesUseCase,
     private val deleteNoteUseCase: DeleteNoteUseCase,
+    private val getNoteUseCase: GetNoteUseCase,
     noteTimerUseCase: NoteTimerUseCase
 ) : ViewModel() {
 
-    data class GetNotesUIState(
+    data class ListAllNotesUIState(
         val notes: List<Note> = emptyList()
     )
 
     val timer = noteTimerUseCase.invoke().stateIn(viewModelScope, SharingStarted.Eagerly, "")
 
     val notes = getNotesUseCase.invoke().map {
-        GetNotesUIState(it)
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, GetNotesUIState())
+        ListAllNotesUIState(it)
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, ListAllNotesUIState())
 
-    fun deleteNote(note: Note) {
+    fun deleteNote(noteId: String) {
         viewModelScope.launch {
-            deleteNoteUseCase(note)
+            getNoteUseCase.invoke(noteId)?.let { note ->
+                deleteNoteUseCase(note)
+            }
         }
     }
 

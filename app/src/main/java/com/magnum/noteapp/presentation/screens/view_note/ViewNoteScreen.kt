@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -59,7 +58,7 @@ fun ViewNoteRootScreen(navController: NavController, noteId: String) {
 @Composable
 fun ViewNoteScreen(
     timer: String,
-    noteState: Note?,
+    noteState: ViewNoteViewModel.GetNoteUIState,
     handleNavigateBack: () -> Unit = {},
 ) {
 
@@ -109,7 +108,7 @@ fun ViewNoteScreen(
                 ) {
 
                     Text(
-                        text = noteState?.title ?: "No title",
+                        text = noteState.note?.title ?: "No title",
                         fontWeight = FontWeight.Bold,
                         fontSize = 22.sp,
                         color = colorResource(id = R.color.teal_700)
@@ -118,7 +117,7 @@ fun ViewNoteScreen(
                     Spacer(modifier = Modifier.height(10.dp))
 
                     Text(
-                        text = noteState?.content ?: "",
+                        text = noteState.note?.content ?: "",
                         fontSize = 18.sp,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -137,9 +136,11 @@ fun ViewNoteScreen(
 fun ViewNotePreview() {
     ViewNoteScreen(
         timer = "00:00:00",
-        noteState = Note(
-            title = "Sample Note",
-            content = "This is a sample note content."
+        noteState = ViewNoteViewModel.GetNoteUIState(
+            note = Note(
+                title = "Sample Note",
+                content = "This is a sample note content."
+            )
         ),
         handleNavigateBack = {}
     )

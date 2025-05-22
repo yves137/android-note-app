@@ -17,15 +17,18 @@ class ViewNoteViewModel(
     noteId: String
 ) :
     ViewModel() {
+    data class GetNoteUIState(val note: Note? = null)
 
-    private val _note = MutableStateFlow<Note?>(null)
+    private val _note = MutableStateFlow(GetNoteUIState())
     val note = _note
     val timer = noteTimerUseCase.invoke().stateIn(viewModelScope, SharingStarted.Eagerly, "")
 
     init {
         viewModelScope.launch {
             getNoteUseCase.invoke(noteId)?.let { foundNote ->
-                _note.update { foundNote }
+                _note.update {
+                    it.copy(note = foundNote)
+                }
             }
         }
     }

@@ -37,12 +37,6 @@ class UpdateNoteViewModel(
         }
     }
 
-    fun modifyNote(note: Note) {
-        _note.update {
-            it.copy(note = note)
-        }
-    }
-
     fun modifyNoteTitle(title: String) {
         _note.update {
             it.copy(note = it.note?.copy(title = title), isSavable = title.isNotEmpty())
