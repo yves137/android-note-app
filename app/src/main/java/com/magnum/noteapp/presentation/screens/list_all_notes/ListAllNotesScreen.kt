@@ -39,11 +39,9 @@ import com.magnum.noteapp.domain.model.Note
 @Composable
 fun ListAllNotesRootScreen(navController: NavController) {
     val noteViewModel: ListAllNotesViewModel = koinViewModel()
-    val allNotes by noteViewModel.notes.collectAsStateWithLifecycle()
-    val timer by noteViewModel.timer.collectAsStateWithLifecycle()
+    val combinedState by noteViewModel.combinedState.collectAsStateWithLifecycle()
     ListAllNotesScreen(
-        timer = timer,
-        allNotes = allNotes,
+        noteUIState = combinedState,
         handleViewNote = { noteId ->
             navController.navigate("viewNote/$noteId")
         },
@@ -62,8 +60,7 @@ fun ListAllNotesRootScreen(navController: NavController) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListAllNotesScreen(
-    timer: String,
-    allNotes: ListAllNotesViewModel.ListAllNotesUIState,
+    noteUIState: ListAllNotesViewModel.ListAllNotesUIState,
     handleViewNote: (String) -> Unit = {},
     handleEditNote: (String) -> Unit = {},
     handleDeleteNote: (String) -> Unit = {},
@@ -86,7 +83,7 @@ fun ListAllNotesScreen(
                             Text("NOTES", fontWeight = FontWeight.Bold)
                             Spacer(modifier = Modifier.width(90.dp))
                             Text(
-                                timer,
+                                noteUIState.timer,
                                 fontSize = 16.sp,
                                 modifier = Modifier.padding(end = 10.dp)
                             )
@@ -117,7 +114,7 @@ fun ListAllNotesScreen(
             ) {
 
 
-                if (allNotes.notes.isEmpty()) {
+                if (noteUIState.notes.isEmpty()) {
                     Text(text = "NO notes!")
                 } else {
                     LazyColumn(
@@ -125,7 +122,7 @@ fun ListAllNotesScreen(
                             .fillMaxSize()
                             .padding(10.dp)
                     ) {
-                        itemsIndexed(allNotes.notes) { _, item ->
+                        itemsIndexed(noteUIState.notes) { _, item ->
                             Spacer(modifier = Modifier.height(2.dp))
                             RoundedCornerCard(
                                 item,
@@ -158,8 +155,10 @@ fun LandingScreenPreview() {
         )
     )
     ListAllNotesScreen(
-        timer = "00:00:00",
-        allNotes = ListAllNotesViewModel.ListAllNotesUIState(notes),
+        noteUIState = ListAllNotesViewModel.ListAllNotesUIState(
+            notes = notes,
+            timer = "00:00:00"
+        ),
         handleViewNote = {},
         handleEditNote = {},
         handleDeleteNote = {},

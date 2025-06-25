@@ -42,11 +42,9 @@ fun ViewNoteRootScreen(navController: NavController, noteId: String) {
         parametersOf(noteId)
     }
 
-    val state by viewModel.note.collectAsStateWithLifecycle()
-    val timer by viewModel.timer.collectAsStateWithLifecycle()
+    val state by viewModel.combinedState.collectAsStateWithLifecycle()
 
     ViewNoteScreen(
-        timer = timer,
         noteState = state,
         handleNavigateBack = {
             navController.popBackStack()
@@ -57,7 +55,6 @@ fun ViewNoteRootScreen(navController: NavController, noteId: String) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ViewNoteScreen(
-    timer: String,
     noteState: ViewNoteViewModel.GetNoteUIState,
     handleNavigateBack: () -> Unit = {},
 ) {
@@ -81,7 +78,7 @@ fun ViewNoteScreen(
                             "PREVIEW", fontWeight = FontWeight.Bold
                         )
                         Text(
-                            timer,
+                            noteState.timer,
                             fontSize = 16.sp,
                             modifier = Modifier.padding(end = 10.dp)
                         )
@@ -135,12 +132,12 @@ fun ViewNoteScreen(
 @Preview
 fun ViewNotePreview() {
     ViewNoteScreen(
-        timer = "00:00:00",
         noteState = ViewNoteViewModel.GetNoteUIState(
             note = Note(
                 title = "Sample Note",
                 content = "This is a sample note content."
-            )
+            ),
+            timer = "00:00:00"
         ),
         handleNavigateBack = {}
     )

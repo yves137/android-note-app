@@ -8,7 +8,7 @@ import com.magnum.noteapp.domain.use_case.GetNoteUseCase
 import com.magnum.noteapp.domain.use_case.GetNotesUseCase
 import com.magnum.noteapp.domain.use_case.NoteTimerUseCase
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -20,13 +20,19 @@ class ListAllNotesViewModel(
 ) : ViewModel() {
 
     data class ListAllNotesUIState(
-        val notes: List<Note> = emptyList()
+        val notes: List<Note> = emptyList(),
+        val timer: String = ""
     )
 
-    val timer = noteTimerUseCase.invoke().stateIn(viewModelScope, SharingStarted.Eagerly, "")
+    private val notesFlow = getNotesUseCase.invoke()
+    private val timerFlow = noteTimerUseCase.invoke()
 
-    val notes = getNotesUseCase.invoke().map {
-        ListAllNotesUIState(it)
+
+    val combinedState = combine(notesFlow, timerFlow) { notes, timer ->
+        ListAllNotesUIState(
+            notes = notes,
+            timer = timer
+        )
     }.stateIn(viewModelScope, SharingStarted.Eagerly, ListAllNotesUIState())
 
     fun deleteNote(noteId: String) {
